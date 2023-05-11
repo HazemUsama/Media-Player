@@ -1,4 +1,4 @@
-Simple Media Player using Python and PyQt5
+Simple Media Player using Python and PyQt5.
 
 ## Requirements
 - Python 3.6+
