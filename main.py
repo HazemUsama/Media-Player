@@ -1,88 +1,93 @@
-# import libraries
 import os
+import pygame
 from tkinter import *
-from tkinter import filedialog
-from pygame import mixer
 
-# Create a GUI window
 root = Tk()
-root.title("Music Player")
-root.geometry("920x600+290+85")
-root.configure(background='#0f1a2b')
-root.resizable(False, False)
+root.minsize(600, 300)
 
-mixer.init()
+listofsongs = []
+v = StringVar()
+songLabel = Label(root, textvariable=v, width=35)
 
-def AddMusic():
-    path = filedialog.askdirectory()
-    if path:
-        os.chdir(path)
-        songs = os.listdir(path)
+index = 0
 
-        for song in songs:
-            if song.endswith(".mp3"):
-                Playlist.insert(END, song)
+def nextsong(event):
+    global index
+    index += 1
+    if index < len(listofsongs):
+        pygame.mixer.music.load(listofsongs[index])
+        pygame.mixer.music.play()
+        updatelabel()
 
+def prevsong(event):
+    global index
+    index -= 1
+    if index >= 0:
+        pygame.mixer.music.load(listofsongs[index])
+        pygame.mixer.music.play()
+        updatelabel()
 
-def PlayMusic():
-    Music_Name = Playlist.get(ACTIVE)
-    print(Music_Name[0:-4])
-    mixer.music.load(Playlist.get(ACTIVE))
-    mixer.music.play()
+def stop(event):
+    pygame.mixer.music.pause()
+    v.set("-- Pause --")
 
+def play(event):
+    if index >= 0 and index < len(listofsongs):
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.unpause()
+        else:
+            pygame.mixer.music.load(listofsongs[index])
+            pygame.mixer.music.play()
+        updatelabel()
 
-# icon
-image_icon = PhotoImage(
-    file="C:/Users/HP/Desktop/Programs/Python-project-Scripts/PYTHON APPS/mp3-MusicPlayer/logo.png")
-root.iconphoto(False, image_icon)
+def updatelabel():
+    global index
+    if index >= 0 and index < len(listofsongs):
+        v.set(listofsongs[index])
+    else:
+        v.set("No song")
 
-Top = PhotoImage(
-    file="C:/Users/HP/Desktop/Programs/Python-project-Scripts/PYTHON APPS/mp3-MusicPlayer/top.png")
-Label(root, image=Top, bg="#0f1a2b").pack()
+home_directory = os.path.expanduser("~")
+directory = os.path.join(home_directory, "Music")
+os.chdir(directory)
 
-# logo
-logo = PhotoImage(
-    file="C:/Users/HP/Desktop/Programs/Python-project-Scripts/PYTHON APPS/mp3-MusicPlayer/logo.png")
-Label(root, image=logo, bg="#0f1a2b", bd=0).place(x=70, y=115)
+for files in os.listdir(directory):
+    if files.endswith(".mp3"):
+        listofsongs.append(files)
+        print(files)
 
-# Button
-ButtonPlay = PhotoImage(
-    file="C:/Users/HP/Desktop/Programs/Python-project-Scripts/PYTHON APPS/mp3-MusicPlayer/play.png")
-Button(root, image=ButtonPlay, bg="#0f1a2b", bd=0,
-       command=PlayMusic).place(x=100, y=400)
+pygame.mixer.init()
 
-ButtonStop = PhotoImage(
-    file="C:/Users/HP/Desktop/Programs/Python-project-Scripts/PYTHON APPS/mp3-MusicPlayer/stop.png")
-Button(root, image=ButtonStop, bg="#0f1a2b", bd=0,
-       command=mixer.music.stop).place(x=30, y=500)
+label = Label(root, text="Music Player")
+label.pack()
 
-ButtonResume = PhotoImage(
-    file="C:/Users/HP/Desktop/Programs/Python-project-Scripts/PYTHON APPS/mp3-MusicPlayer/resume.png")
-Button(root, image=ButtonResume, bg="#0f1a2b", bd=0,
-       command=mixer.music.unpause).place(x=115, y=500)
+listbox = Listbox(root)
+listbox.pack()
 
-ButtonPause = PhotoImage(
-    file="C:/Users/HP/Desktop/Programs/Python-project-Scripts/PYTHON APPS/mp3-MusicPlayer/pause.png")
-Button(root, image=ButtonPause, bg="#0f1a2b", bd=0,
-       command=mixer.music.pause).place(x=200, y=500)
+listofsongs.reverse()
 
-# Label
-Menu = PhotoImage(
-    file="C:/Users/HP/Desktop/Programs/Python-project-Scripts/PYTHON APPS/mp3-MusicPlayer/menu.png")
-Label(root, image=Menu, bg="#0f1a2b").pack(padx=10, pady=50, side=RIGHT)
+for items in listofsongs:
+    listbox.insert(0, items)
 
-Frame_Music = Frame(root, bd=2, relief=RIDGE)
-Frame_Music.place(x=330, y=350, width=560, height=200)
+listofsongs.reverse()
 
-Button(root, text="Open Folder", width=15, height=2, font=("arial",
-       10, "bold"), fg="Black", bg="#21b3de", command=AddMusic).place(x=330, y=300)
+nextButton = Button(root, text="Next Song")
+nextButton.pack()
 
-Scroll = Scrollbar(Frame_Music)
-Playlist = Listbox(Frame_Music, width=100, font=("Aloja", 10), bg="#000000",
-                   fg="white", selectbackground="lightblue", cursor="hand2", bd=0, yscrollcommand=Scroll.set)
-Scroll.config(command=Playlist.yview)
-Scroll.pack(side=RIGHT, fill=Y)
-Playlist.pack(side=LEFT, fill=BOTH)
+previousButton = Button(root, text="Previous Song")
+previousButton.pack()
 
-# Execute Tkinter
+stopButton = Button(root, text="Stop")
+stopButton.pack()
+
+playbutton = Button(root, text="Play")
+playbutton.pack()
+
+playbutton.bind("<Button-1>", play)
+nextButton.bind("<Button-1>", nextsong)
+previousButton.bind("<Button-1>", prevsong)
+stopButton.bind("<Button-1>", stop)
+
+songLabel.pack()
+
 root.mainloop()
