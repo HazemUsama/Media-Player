@@ -1,14 +1,11 @@
 Simple Media Player using Python and PyQt5.
 
 ## Requirements
-- Python 3.6+
-- PyQt5
-- PyQt5-tools
+- tkinter
 - PyGame
 
 ## Installation
-- Install Python 3.6 or higher
-- Install PyQt5 and PyQt5-tools
+- Install tkinter
 - Install PyGame
 - Clone this repository
 - Run `python main.py`
