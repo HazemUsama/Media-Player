@@ -35,35 +35,35 @@ def PlayMusic():
 
 
 # icon
-image_icon = PhotoImage(file="~/Pictures/888881.png")
+image_icon = PhotoImage(file="Icons/play.png")
 root.iconphoto(False, image_icon)
 
-Top = PhotoImage(file="~/Pictures/888881.png")
+Top = PhotoImage(file="Icons/play.png")
 Label(root, image=Top, bg="#0f1a2b").pack()
 
 # logo
-logo = PhotoImage(file="~/Pictures/888881.png")
+logo = PhotoImage(file="Icons/play.png")
 Label(root, image=logo, bg="#0f1a2b", bd=0).place(x=70, y=115)
 
 # Button
-ButtonPlay = PhotoImage(file="~/Pictures/888881.png")
+ButtonPlay = PhotoImage(file="Icons/play.png")
 Button(root, image=ButtonPlay, bg="#0f1a2b", bd=0,
        command=PlayMusic).place(x=100, y=400)
 
-ButtonStop = PhotoImage( file="~/Pictures/888881.png")
+ButtonStop = PhotoImage( file="Icons/play.png")
 Button(root, image=ButtonStop, bg="#0f1a2b", bd=0,
        command=mixer.music.stop).place(x=30, y=500)
 
-ButtonResume = PhotoImage(file="~/Pictures/888881.png")
+ButtonResume = PhotoImage(file="Icons/play.png")
 Button(root, image=ButtonResume, bg="#0f1a2b", bd=0,
        command=mixer.music.unpause).place(x=115, y=500)
 
-ButtonPause = PhotoImage(file="~/Pictures/888881.png")
+ButtonPause = PhotoImage(file="Icons/play.png")
 Button(root, image=ButtonPause, bg="#0f1a2b", bd=0,
        command=mixer.music.pause).place(x=200, y=500)
 
 # Label
-Menu = PhotoImage(file="~/Pictures/888881.png")
+Menu = PhotoImage(file="Icons/play.png")
 Label(root, image=Menu, bg="#0f1a2b").pack(padx=10, pady=50, side=RIGHT)
 
 Frame_Music = Frame(root, bd=2, relief=RIDGE)
