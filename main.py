@@ -8,7 +8,7 @@ import tkinter.ttk as ttk
 # Create a GUI window
 root = Tk()
 root.title("Music.hub")
-root.geometry("500x400")
+root.geometry("500x500")
 
 pygame.mixer.init();
 
@@ -25,7 +25,9 @@ def play_time():
        current_song = song_box.curselection()
        song = song_box.get(current_song)
        song_mut = MP3(song)
+       global song_len
        song_len = song_mut.info.length
+       my_slider.config(value = current_time)
        converted_song_len = time.strftime("%M:%S" , time.gmtime(song_len))
        status_bar.config(text=F'{converted_time}/{converted_song_len}')
 
@@ -37,15 +39,13 @@ def Play():
        pygame.mixer.music.load(song)
        pygame.mixer.music.play(loops = 0)
        play_time()
+       slider_position = int(song_len)
+       my_slider.config(to=slider_position, value=0) 
 
 def Stop():
        pygame.mixer.music.stop()
        song_box.selection_clear(ACTIVE)
        status_bar.config(text='')
-
-def add_song():
-       song = filedialog.askopenfilename(initialdir="Music/", title="choose a song" , filetypes=(("mp3 Files", ".mp3"), ))
-       song_box.insert(END, song)
 
 def add_many_song():
        songs = filedialog.askopenfilenames(initialdir="Music/", title="choose a song" , filetypes=(("mp3 Files", ".mp3"), ))
@@ -89,8 +89,8 @@ def previous_song():
        song_box.activate(prevsong)
        song_box.select_set(prevsong, last=None)
 
-def slide():
-       pass
+def slide(x):
+       slider_label.config(text = int(my_slider.get()))
 
 next_ico = PhotoImage(file="Icons/next.png")
 back_ico = PhotoImage(file="Icons/previous.png")
@@ -129,9 +129,10 @@ remove_song_menu.add_command(label="Remove all songs" , command=remove_all_songs
 status_bar = Label(root, text='' , bd=1, relief=GROOVE , anchor=E)
 status_bar.pack(fill=X, side=BOTTOM, ipady=2)
 
-my_slider = ttk.Scale(root, from_=0 , to=100, orient=HORIZONTAL, value= 0 , command= slide)
-my_slider.pack(pady=30)
+my_slider = ttk.Scale(root, from_=0 ,length=360, to=100, orient=HORIZONTAL, value= 0 , command= slide)
+my_slider.pack(pady=20)
 
-
+slider_label = Label(root,text="0")
+slider_label.pack(pady=10)
 # Execute Tkinter
 root.mainloop()
