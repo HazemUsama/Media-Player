@@ -45,7 +45,8 @@ def Pause(is_paused):
 
 def next_song():
        nxtsong = song_box.curselection()
-       song = str(nxtsong+1)
+       nxtsong = nxtsong[0] + 1
+       song = song_box.get(nxtsong)
        pygame.mixer.music.load(song)
        pygame.mixer.music.play(loops=0)
 
