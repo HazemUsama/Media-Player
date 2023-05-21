@@ -50,7 +50,6 @@ def next_song():
        pygame.mixer.music.load(song)
        pygame.mixer.music.play(loops=0)
 
-<<<<<<< HEAD
 next_ico = PhotoImage(file="Images/next.png")
 back_ico = PhotoImage(file="Images/back.png")
 play_ico = PhotoImage(file="Images/play.png")
@@ -64,6 +63,7 @@ next_button = Button(control_frame,image=next_ico, borderwidth=0, command= next_
 back_button = Button(control_frame,image=back_ico, borderwidth=0)
 play_button = Button(control_frame,image=play_ico, borderwidth=0 , command= Play)
 pause_butoon =Button(control_frame,image=pause_ico, borderwidth=0, command=lambda: Pause(pause) )
+
 stop_butoon = Button(control_frame,image=stop_ico, borderwidth=0, command= Stop)
 
 next_button.grid(row=0, column=5, padx=10)
