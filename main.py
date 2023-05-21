@@ -1,8 +1,4 @@
 # import libraries
-from asyncore import loop
-from audioop import add
-from cgi import print_environ_usage
-import imp
 import os
 from tkinter import *
 import pygame
