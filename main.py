@@ -1,9 +1,4 @@
-# import libraries
-import os
-from tkinter import *
-import pygame
-from tkinter import filedialog
-# Create a GUI window
+
 root = Tk()
 root.title("Music.hub")
 root.geometry("500x400")
@@ -12,7 +7,12 @@ pygame.mixer.init();
 
 global pause
 pause = False
-
+# import libraries
+import os
+from tkinter import *
+import pygame
+from tkinter import filedialog
+# Create a GUI window
 song_box = Listbox(root, bg="black" , fg="blue" , width=60 , selectbackground="gray", selectforeground="black")
 song_box.pack(pady=20)
 
@@ -49,7 +49,6 @@ def next_song():
        pygame.mixer.music.load(song)
        pygame.mixer.music.play(loops=0)
 
-<<<<<<< HEAD
 next_ico = PhotoImage(file="Images/next.png")
 back_ico = PhotoImage(file="Images/back.png")
 play_ico = PhotoImage(file="Images/play.png")
@@ -78,52 +77,6 @@ add_song_to_menu = Menu(my_menu)
 my_menu.add_cascade(label="Add song", menu=add_song_to_menu)
 add_song_to_menu.add_command(label="Add one song" , command= add_song)
 add_song_to_menu.add_command(label="Add many songs" , command= add_many_song)
-=======
-# icon
-image_icon = PhotoImage(file="Icons/play.png")
-root.iconphoto(False, image_icon)
-
-Top = PhotoImage(file="Icons/play.png")
-Label(root, image=Top, bg="#0f1a2b").pack()
-
-# logo
-logo = PhotoImage(file="Icons/play.png")
-Label(root, image=logo, bg="#0f1a2b", bd=0).place(x=70, y=115)
-
-# Button
-ButtonPlay = PhotoImage(file="Icons/play.png")
-Button(root, image=ButtonPlay, bg="#0f1a2b", bd=0,
-       command=PlayMusic).place(x=100, y=400)
-
-ButtonStop = PhotoImage( file="Icons/play.png")
-Button(root, image=ButtonStop, bg="#0f1a2b", bd=0,
-       command=mixer.music.stop).place(x=30, y=500)
-
-ButtonResume = PhotoImage(file="Icons/play.png")
-Button(root, image=ButtonResume, bg="#0f1a2b", bd=0,
-       command=mixer.music.unpause).place(x=115, y=500)
-
-ButtonPause = PhotoImage(file="Icons/play.png")
-Button(root, image=ButtonPause, bg="#0f1a2b", bd=0,
-       command=mixer.music.pause).place(x=200, y=500)
-
-# Label
-Menu = PhotoImage(file="Icons/play.png")
-Label(root, image=Menu, bg="#0f1a2b").pack(padx=10, pady=50, side=RIGHT)
-
-Frame_Music = Frame(root, bd=2, relief=RIDGE)
-Frame_Music.place(x=330, y=350, width=560, height=200)
-
-Button(root, text="Open Folder", width=15, height=2, font=("arial",
-       10, "bold"), fg="Black", bg="#21b3de", command=AddMusic).place(x=330, y=300)
-
-Scroll = Scrollbar(Frame_Music)
-Playlist = Listbox(Frame_Music, width=100, font=("Aloja", 10), bg="#000000",
-                   fg="white", selectbackground="lightblue", cursor="hand2", bd=0, yscrollcommand=Scroll.set)
-Scroll.config(command=Playlist.yview)
-Scroll.pack(side=RIGHT, fill=Y)
-Playlist.pack(side=LEFT, fill=BOTH)
->>>>>>> 87c0570f44121995f8940c419e0109fb5e2c1d93
 
 # Execute Tkinter
 root.mainloop()
