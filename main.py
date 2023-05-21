@@ -1,10 +1,10 @@
 # import libraries
-import os
 from tkinter import *
 import pygame
 from tkinter import filedialog
 import time
 from mutagen.mp3 import MP3
+import tkinter.ttk as ttk
 # Create a GUI window
 root = Tk()
 root.title("Music.hub")
@@ -89,13 +89,15 @@ def previous_song():
        song_box.activate(prevsong)
        song_box.select_set(prevsong, last=None)
 
-
+def slide():
+       pass
 
 next_ico = PhotoImage(file="Icons/next.png")
 back_ico = PhotoImage(file="Icons/previous.png")
 play_ico = PhotoImage(file="Icons/play.png")
 pause_ico = PhotoImage(file="Icons/pause.png")
 stop_ico = PhotoImage(file="Icons/stop.png")
+up_ico = PhotoImage(file="Icons/upload.png")
 
 control_frame = Frame(root)
 control_frame.pack()
@@ -105,20 +107,19 @@ back_button = Button(control_frame,image=back_ico, borderwidth=0, command = prev
 play_button = Button(control_frame,image=play_ico, borderwidth=0 , command= Play)
 pause_butoon =Button(control_frame,image=pause_ico, borderwidth=0, command= Pause)
 stop_butoon = Button(control_frame,image=stop_ico, borderwidth=0, command= Stop)
+up_button = Button(control_frame, image= up_ico, borderwidth = 0, command = add_many_song)
 
 next_button.grid(row=0, column=5, padx=10)
 back_button.grid(row = 0, column=1,padx=10)
 play_button.grid(row =0, column=3,padx=10)
 pause_butoon.grid(row = 0 , column=4,padx=10)
 stop_butoon.grid(row = 0, column=2,padx=10)
+up_button.grid(row= 1, column = 3, pady = 10)
 
 my_menu = Menu(root)
 root.config(menu=my_menu)
 
 add_song_to_menu = Menu(my_menu)
-my_menu.add_cascade(label="Add song", menu=add_song_to_menu)
-add_song_to_menu.add_command(label="Add one song" , command= add_song)
-add_song_to_menu.add_command(label="Add many songs" , command= add_many_song)
 
 remove_song_menu = Menu(my_menu)
 my_menu.add_cascade(label="Remove song", menu=remove_song_menu)
@@ -126,6 +127,11 @@ remove_song_menu.add_command(label="Remove one song" , command=remove_song)
 remove_song_menu.add_command(label="Remove all songs" , command=remove_all_songs)
 
 status_bar = Label(root, text='' , bd=1, relief=GROOVE , anchor=E)
-status_bar.pack(fill=X, side=BOTTOM, ipady=2)      
+status_bar.pack(fill=X, side=BOTTOM, ipady=2)
+
+my_slider = ttk.Scale(root, from_=0 , to=100, orient=HORIZONTAL, value= 0 , command= slide)
+my_slider.pack(pady=30)
+
+
 # Execute Tkinter
 root.mainloop()
