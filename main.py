@@ -1,15 +1,11 @@
-<<<<<<< HEAD
-
-=======
 # import libraries
 import os
 from tkinter import *
 import pygame
 from tkinter import filedialog
 import time
-from mutagen import MP3
+from mutagen.mp3 import MP3
 # Create a GUI window
->>>>>>> dbf93570601d0772f306cb3af0c8d2176debbe49
 root = Tk()
 root.title("Music.hub")
 root.geometry("500x400")
@@ -18,20 +14,23 @@ pygame.mixer.init();
 
 global pause
 pause = False
-# import libraries
-import os
-from tkinter import *
-import pygame
-from tkinter import filedialog
-# Create a GUI window
-song_box = Listbox(root, bg="black" , fg="blue" , width=60 , selectbackground="gray", selectforeground="black")
+
+song_box = Listbox(root, bg="black" , fg="green" , width=60 , selectbackground="gray", selectforeground="black")
 song_box.pack(pady=20)
 
 def play_time():
        current_time = pygame.mixer.music.get_pos() /1000      
-       converted_time = time.strftime("%H:%M:%S" , time.gmtime(current_time))     
-       status_bar.config(text= converted_time)
+       converted_time = time.strftime("%M:%S" , time.gmtime(current_time))     
        status_bar.after(1000, play_time)
+       current_song = song_box.curselection()
+       song = song_box.get(current_song)
+       song_mut = MP3(song)
+       song_len = song_mut.info.length
+       converted_song_len = time.strftime("%M:%S" , time.gmtime(song_len))
+       status_bar.config(text=F'{converted_time}/{converted_song_len}')
+
+
+
 
 def Play():
        song = song_box.get(ACTIVE)
@@ -42,6 +41,8 @@ def Play():
 def Stop():
        pygame.mixer.music.stop()
        song_box.selection_clear(ACTIVE)
+       status_bar.config(text='')
+
 def add_song():
        song = filedialog.askopenfilename(initialdir="Music/", title="choose a song" , filetypes=(("mp3 Files", ".mp3"), ))
        song_box.insert(END, song)
@@ -91,11 +92,11 @@ def previous_song():
 
 
 
-next_ico = PhotoImage(file="Images/next.png")
-back_ico = PhotoImage(file="Images/back.png")
-play_ico = PhotoImage(file="Images/play.png")
-pause_ico = PhotoImage(file="Images/pause.png")
-stop_ico = PhotoImage(file="Images/stop.png")
+next_ico = PhotoImage(file="Icons/next.png")
+back_ico = PhotoImage(file="Icons/previous.png")
+play_ico = PhotoImage(file="Icons/play.png")
+pause_ico = PhotoImage(file="Icons/pause.png")
+stop_ico = PhotoImage(file="Icons/stop.png")
 
 control_frame = Frame(root)
 control_frame.pack()
@@ -119,14 +120,11 @@ add_song_to_menu = Menu(my_menu)
 my_menu.add_cascade(label="Add song", menu=add_song_to_menu)
 add_song_to_menu.add_command(label="Add one song" , command= add_song)
 add_song_to_menu.add_command(label="Add many songs" , command= add_many_song)
-<<<<<<< HEAD
-=======
 
 remove_song_menu = Menu(my_menu)
 my_menu.add_cascade(label="Remove song", menu=remove_song_menu)
 remove_song_menu.add_command(label="Remove one song" , command=remove_song)
 remove_song_menu.add_command(label="Remove all songs" , command=remove_all_songs)
->>>>>>> dbf93570601d0772f306cb3af0c8d2176debbe49
 
 status_bar = Label(root, text='' , bd=1, relief=GROOVE , anchor=E)
 status_bar.pack(fill=X, side=BOTTOM, ipady=2)      
