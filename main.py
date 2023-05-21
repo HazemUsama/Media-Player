@@ -60,9 +60,8 @@ def remove_all_songs():
        song_box.delete(0,END)
        pygame.mixer.music.stop()
 
-def Pause(is_paused):
-       global pause
-       pause = is_paused
+def Pause():
+       global pause 
        if not pause:
               pygame.mixer.music.pause()
               pause = True
@@ -104,7 +103,7 @@ control_frame.pack()
 next_button = Button(control_frame,image=next_ico, borderwidth=0, command= next_song)
 back_button = Button(control_frame,image=back_ico, borderwidth=0, command = previous_song)
 play_button = Button(control_frame,image=play_ico, borderwidth=0 , command= Play)
-pause_butoon =Button(control_frame,image=pause_ico, borderwidth=0, command=lambda: Pause(pause) )
+pause_butoon =Button(control_frame,image=pause_ico, borderwidth=0, command= Pause)
 stop_butoon = Button(control_frame,image=stop_ico, borderwidth=0, command= Stop)
 
 next_button.grid(row=0, column=5, padx=10)
