@@ -3,6 +3,7 @@ import pygame
 from tkinter import filedialog
 import time
 from mutagen.mp3 import MP3
+import os.path
 import tkinter.ttk as ttk
 
 root = Tk()
@@ -26,8 +27,9 @@ def play_time():
     if pygame.mixer.music.get_busy() and not pause and not is_sliding:
         current_time = pygame.mixer.music.get_pos() / 1000
         converted_time = time.strftime("%M:%S", time.gmtime(current_time))
-        song = song_box.get(ACTIVE)
-        song_mut = MP3(song)
+        song_title = song_box.get(ACTIVE)
+        song_path = song_dict.get(song_title)
+        song_mut = MP3(song_path)
         song_len = song_mut.info.length
         converted_song_len = time.strftime("%M:%S", time.gmtime(song_len))
         if int(my_slider.get()) == int(song_len):
@@ -47,34 +49,40 @@ def play_time():
 
 
 def play_music():
-    song = song_box.get(ACTIVE)
-    pygame.mixer.music.load(song)
+    song_title = song_box.get(ACTIVE)
+    song_path = song_dict.get(song_title)
+    pygame.mixer.music.load(song_path)
     pygame.mixer.music.play(loops=0)
     update_status_bar()
     play_time()
 
 
 def update_status_bar():
-    song = song_box.get(ACTIVE)
-    song_mut = MP3(song)
+    song_title = song_box.get(ACTIVE)
+    song_path = song_dict.get(song_title)
+    song_mut = MP3(song_path)
     song_len = song_mut.info.length
     converted_song_len = time.strftime("%M:%S", time.gmtime(song_len))
     status_bar.config(text=f"Duration: {converted_song_len}")
 
-
 def add_songs():
     songs = filedialog.askopenfilenames(initialdir="Music/", title="Choose songs", filetypes=(("MP3 Files", "*.mp3"),))
     for song in songs:
-        song_box.insert(END, song)
-
-
+        song_title = os.path.basename(song)
+        song_title = song_title.replace(".mp3", "")
+        song_box.insert(END, song_title)
+        song_dict[song_title] = song
+ 
 def remove_song():
     selected_song = song_box.curselection()
+    song_title = song_box.get(selected_song)
     song_box.delete(selected_song)
+    del song_dict[song_title]
 
 
 def clear_songs():
     song_box.delete(0, END)
+    song_dict.clear()
 
 
 def pause_music():
@@ -89,7 +97,7 @@ def pause_music():
 
 def next_song():
     selected_song = song_box.curselection()
-    next_song = selected_song[0] + 1
+    next_song = (selected_song[0] + 1) % song_box.size()
     song_box.selection_clear(0, END)
     song_box.activate(next_song)
     song_box.selection_set(next_song, last=None)
@@ -98,7 +106,7 @@ def next_song():
 
 def previous_song():
     selected_song = song_box.curselection()
-    prev_song = selected_song[0] - 1
+    prev_song = (selected_song[0] - 1 + song_box.size()) % song_box.size()
     song_box.selection_clear(0, END)
     song_box.activate(prev_song)
     song_box.selection_set(prev_song, last=None)
@@ -108,8 +116,9 @@ def previous_song():
 def slide(event):
     global is_sliding
     is_sliding = True
-    song = song_box.get(ACTIVE)
-    pygame.mixer.music.load(song)
+    song_title = song_box.get(ACTIVE)
+    song_path = song_dict.get(song_title)
+    pygame.mixer.music.load(song_path)
     pygame.mixer.music.play(loops=0, start=int(my_slider.get()))
     volume = volume_scale.get() / 100
     pygame.mixer.music.set_volume(volume)
@@ -118,8 +127,9 @@ def slide(event):
 def release_position(event):
     global is_sliding
     is_sliding = False
-    song = song_box.get(ACTIVE)
-    pygame.mixer.music.load(song)
+    song_title = song_box.get(ACTIVE)
+    song_path = song_dict.get(song_title)
+    pygame.mixer.music.load(song_path)
     pygame.mixer.music.play(loops=0, start=int(my_slider.get()))
     volume = volume_scale.get() / 100
     pygame.mixer.music.set_volume(volume)
@@ -132,13 +142,13 @@ def release_volume(event):
 
 
 # Creating buttons icons
-next_ico = PhotoImage(file="Icons/next.png").subsample(3, 3)
-back_ico = PhotoImage(file="Icons/previous.png").subsample(3, 3)
-play_ico = PhotoImage(file="Icons/play.png").subsample(3, 3)
-pause_ico = PhotoImage(file="Icons/pause.png").subsample(3, 3)
-add_ico = PhotoImage(file="Icons/add.png").subsample(3, 3)
-remove_ico = PhotoImage(file="Icons/add.png").subsample(3, 3)
-clear_ico = PhotoImage(file="Icons/add.png").subsample(3, 3)
+next_ico = PhotoImage(file="Icons/next.png").subsample(2, 2)
+back_ico = PhotoImage(file="Icons/previous.png").subsample(2, 2)
+play_ico = PhotoImage(file="Icons/play.png").subsample(2, 2)
+pause_ico = PhotoImage(file="Icons/pause.png").subsample(2, 2)
+add_ico = PhotoImage(file="Icons/add.png").subsample(2, 2)
+remove_ico = PhotoImage(file="Icons/remove.png").subsample(2, 2)
+clear_ico = PhotoImage(file="Icons/clear.png").subsample(2, 2)
 
 # Creating control frame
 control_frame = Frame(root)
