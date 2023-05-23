@@ -1,23 +1,28 @@
 # import libraries
 from tkinter import *
+from turtle import bgcolor
 import pygame
 from tkinter import filedialog
 import time
 from mutagen.mp3 import MP3
 import tkinter.ttk as ttk
-
+from pedalboard import Pedalboard, Chorus, Reverb, Compressor, Delay, Distortion, Gain
+from pedalboard.io import AudioFile
 # Create a GUI window
 root = Tk()
 root.title("Music.hub")
-root.geometry("500x500")
+root.geometry("600x600")
+board = Pedalboard();
 
 pygame.mixer.init()
 
 global pause
 pause = False
 
-song_box = Listbox(root, bg="#121212", fg="#FFFFFF", selectbackground="#4CAF50", selectforeground="#FFFFFF", bd=0, font=("Arial", 10))
+song_box = Listbox(root, bg="#121212", fg="#FFFFFF", selectbackground="#4CAF50", selectforeground="#FFFFFF", bd=0,
+                   font=("Arial", 10))
 song_box.pack(pady=(20, 10), padx=(int(root.winfo_width() * 0.2), int(root.winfo_width() * 0.2)), fill=BOTH, expand=True)
+
 
 def play_time():
     current_time = pygame.mixer.music.get_pos() / 1000
@@ -41,16 +46,16 @@ def play_time():
         status_bar.config(text=F'{converted_time}/{converted_song_len}')
         next_time = int(my_slider.get()) + 1
         my_slider.config(value=next_time)
-    
+
     status_bar.after(1000, play_time)
 
 
 def Play():
     song = song_box.get(ACTIVE)
     pygame.mixer.music.load(song)
+    pygame.mixer.music.play()
     volume = volume_scale.get() / 100
     pygame.mixer.music.set_volume(volume)
-    pygame.mixer.music.play(loops=0)
     play_time()
 
 
@@ -117,7 +122,26 @@ def slide(x):
     volume = volume_scale.get() / 100
     pygame.mixer.music.set_volume(volume)
 
-       
+def reverb():
+            # Add reverb effect
+            board.append(Reverb(room_size=0.2))
+            
+def compress():
+            # Add a compressor pedal
+            board.append(Compressor(threshold_db=-20, ratio=5, attack_ms=10, release_ms=50))
+            
+def delay():
+            # Add a delay pedal
+            board.append(Delay(delay_seconds=0.2))
+        
+def distortion():
+            # Add a distortion pedal
+            board.append(Distortion(distortion=0.2))
+            
+            
+def gain():
+            board.append(Gain(gain_db=10))
+
 
 next_ico = PhotoImage(file="Icons/next.png")
 back_ico = PhotoImage(file="Icons/previous.png")
@@ -138,7 +162,9 @@ next_button.grid(row=0, column=5, padx=10)
 back_button.grid(row=0, column=1, padx=10)
 play_button.grid(row=0, column=4, padx=10)
 pause_button.grid(row=0, column=2, padx=10)
-up_button.grid(row=0, column=3, pady=10)
+up_button.grid(row=0, column=3, padx=10)
+
+
 
 my_menu = Menu(root)
 root.config(menu=my_menu)
@@ -148,15 +174,24 @@ my_menu.add_cascade(label="Remove song", menu=remove_song_menu)
 remove_song_menu.add_command(label="Remove one song", command=remove_song)
 remove_song_menu.add_command(label="Remove all songs", command=remove_all_songs)
 
+features = Menu(my_menu)
+my_menu.add_cascade(label="Features", menu=features)
+features.add_command(label="Compress", command=compress)
+features.add_command(label="Delay", command=delay)
+features.add_command(label="Gain", command=gain)
+features.add_command(label="Reverb",command= reverb)
+
 status_bar = Label(root, text='', bd=1, relief=GROOVE, anchor=E)
 status_bar.pack(fill=X, side=BOTTOM, ipady=2)
 
 my_slider = ttk.Scale(root, from_=0, length=360, to=100, orient=HORIZONTAL, value=0, command=slide)
 my_slider.pack(fill=X, padx=root.winfo_screenmmwidth() * 0.2)
 
-volume_scale = Scale(root, from_=0, to=100, orient=HORIZONTAL, command= slide)
-volume_scale.set(50)
-volume_scale.pack(pady=(10, 20), padx=(int(root.winfo_width() * 0.2), int(root.winfo_width() * 0.2)), fill=X)
+volume_scale = Scale(root, from_=0, to=100, orient=HORIZONTAL, command=slide)
+volume_scale.set(100)
+volume_scale.pack(pady=0, padx=(int(root.winfo_screenmmwidth() * 0.9)), fill=X)
+
+pedalboard = Pedalboard()  # Create the Pedalboard object
 
 # Execute Tkinter
 root.mainloop()
