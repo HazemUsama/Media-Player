@@ -1,8 +1,10 @@
+from multiprocessing.sharedctypes import Value
 from tkinter import *
 import os
 import pygame
 import time
 from tkinter import filedialog
+import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 from mutagen.mp3 import MP3
 import random
@@ -85,7 +87,7 @@ class MusicPlayer:
         self.song_slider = Scale(self.root, from_=0, to=100, orient=HORIZONTAL, sliderlength=15, length=500,
                                  bg="#282828", fg="#4CAF50", activebackground="#4CAF50", troughcolor="#121212",
                                  command=self.slide)
-        self.song_slider.pack(pady=(10, 0), padx=10)
+        self.song_slider.pack(fill=X, padx = self.root.winfo_screenmmwidth()*0.2)
 
         self.volume_slider = Scale(self.root, from_=0, to=100, orient=HORIZONTAL, sliderlength=15, length=200,
                                    bg="#282828", fg="#4CAF50", activebackground="#4CAF50", troughcolor="#121212",
@@ -106,6 +108,7 @@ class MusicPlayer:
 
         self.song_box.bind("<Double-Button-1>", self.play_selected_song)
 
+        self.root.after(1000, self.update_status_bar)
         self.root.mainloop()
 
     def add_song(self):
@@ -134,7 +137,7 @@ class MusicPlayer:
             self.current_song = selected_song[0]
             song_path = self.song_list[self.current_song]
             pygame.mixer.music.load(song_path)
-            pygame.mixer.music.play()
+            pygame.mixer.music.play(loops = 0)
             self.update_status_bar()
             self.update_slider()
         else:
@@ -148,6 +151,7 @@ class MusicPlayer:
     def stop_song(self):
         pygame.mixer.music.stop()
         self.current_song = None
+        self.song_box.selection_clear(ACTIVE)
         self.song_slider.set(0)
         self.status_bar.config(text='')
 
@@ -179,20 +183,18 @@ class MusicPlayer:
             song_path = self.song_list[self.current_song]
             song_mut = MP3(song_path)
             song_len = song_mut.info.length
-            self.song_slider.config(to=100, value=0, length=int(song_len))
-
+            current_time = pygame.mixer.music.get_pos();
+            self.song_slider.config(value=current_time ,to=song_len)
     def update_status_bar(self):
         if self.current_song is not None:
             song_path = self.song_list[self.current_song]
             song_mut = MP3(song_path)
             song_len = song_mut.info.length
-
-            current_time = pygame.mixer.music.get_pos() // 1000
+            current_time = pygame.mixer.music.get_pos() / 1000
             converted_current_time = time.strftime('%M:%S', time.gmtime(current_time))
-            current_status = f'Playing: {song_path}  Time Elapsed: {converted_current_time} / {int(song_len)} seconds'
-            self.status_bar.config(text=current_status)
-
-        self.status_bar.after(1000, self.update_status_bar)
+            converted_song_len = time.strftime('%M:%S', time.gmtime(song_len))
+            self.status_bar.after(1000, self.update_status_bar)
+            self.status_bar.config(text= f'{converted_current_time} / {converted_song_len}')
 
     def toggle_repeat(self):
         self.repeat_mode = not self.repeat_mode
