@@ -20,6 +20,29 @@ is_sliding = False
 song_box = Listbox(root, bg="white", fg="black", selectbackground="gray", selectforeground="white", font=("Helvetica", 10), relief=FLAT)
 song_box.pack(pady=20, padx=20, fill=BOTH, expand=True)
 
+
+style = ttk.Style()
+style.theme_use("clam")
+style.configure("TButton",
+                background="#f47676",
+                foreground="white",
+                font=("Helvetica", 10),
+                relief=FLAT,
+                width=10,
+                padding=5)
+style.map("TButton",
+          background=[('active', '#f47676')])
+
+style.configure("TScale",
+                background="#f47676",
+                troughcolor="#424242",
+                sliderlength=20,
+                sliderthickness=10,
+                troughrelief=FLAT,
+                gripcount=0)
+style.map("TScale",
+          background=[('active', '#f47676')])
+
 song_dict = {}
 
 
@@ -63,7 +86,6 @@ def update_status_bar():
     song_mut = MP3(song_path)
     song_len = song_mut.info.length
     converted_song_len = time.strftime("%M:%S", time.gmtime(song_len))
-    status_bar.config(text=f"Duration: {converted_song_len}")
 
 def add_songs():
     songs = filedialog.askopenfilenames(initialdir="Music/", title="Choose songs", filetypes=(("MP3 Files", "*.mp3"),))
@@ -101,6 +123,7 @@ def next_song():
     song_box.selection_clear(0, END)
     song_box.activate(next_song)
     song_box.selection_set(next_song, last=None)
+    my_slider.set(0)  
     play_music()
 
 
@@ -110,6 +133,7 @@ def previous_song():
     song_box.selection_clear(0, END)
     song_box.activate(prev_song)
     song_box.selection_set(prev_song, last=None)
+    my_slider.set(0)  
     play_music()
 
 
@@ -182,7 +206,7 @@ slider_frame.pack(pady=10)
 my_slider = ttk.Scale(slider_frame, from_=0, to=100, orient=HORIZONTAL, value=0, length=360)
 my_slider.pack(fill=X)
 
-volume_scale = Scale(root, from_=0, to=100, orient=HORIZONTAL, length=200)
+volume_scale = ttk.Scale(root, from_=0, to=100, orient=HORIZONTAL, length=200)
 volume_scale.set(100)
 volume_scale.pack(pady=10)
 
