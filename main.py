@@ -64,10 +64,6 @@ class MusicPlayer:
                                    command=self.pause_song)
         self.button_pause.grid(row=0, column=2, padx=5)
 
-        self.button_stop = Button(self.control_frame, image=stop_ico, bd=0, bg="#282828", activebackground="#282828",
-                                  command=self.stop_song)
-        self.button_stop.grid(row=0, column=3, padx=5)
-
         self.button_next = Button(self.control_frame, image=next_ico, bd=0, bg="#282828", activebackground="#282828",
                                   command=self.next_song)
         self.button_next.grid(row=0, column=4, padx=5)
@@ -75,14 +71,6 @@ class MusicPlayer:
         self.button_upload = Button(self.control_frame, image=upload_ico, bd=0, bg="#282828",
                                     activebackground="#282828", command=self.add_song)
         self.button_upload.grid(row=1, column=2, pady=(10, 0))
-
-        self.button_shuffle = Button(self.control_frame, image=shuffle_ico, bd=0, bg="#282828",
-                                     activebackground="#282828", command=self.toggle_shuffle)
-        self.button_shuffle.grid(row=1, column=0, pady=(10, 0))
-
-        self.button_repeat = Button(self.control_frame, image=repeat_ico, bd=0, bg="#282828",
-                                    activebackground="#282828", command=self.toggle_repeat)
-        self.button_repeat.grid(row=1, column=4, pady=(10, 0))
 
         self.song_slider = Scale(self.root, from_=0, to=100, orient=HORIZONTAL, sliderlength=15, length=500,
                                  bg="#282828", fg="#4CAF50", activebackground="#4CAF50", troughcolor="#121212",
@@ -195,12 +183,6 @@ class MusicPlayer:
             converted_song_len = time.strftime('%M:%S', time.gmtime(song_len))
             self.status_bar.after(1000, self.update_status_bar)
             self.status_bar.config(text= f'{converted_current_time} / {converted_song_len}')
-
-    def toggle_repeat(self):
-        self.repeat_mode = not self.repeat_mode
-
-    def toggle_shuffle(self):
-        self.shuffle_mode = not self.shuffle_mode
 
     def change_volume(self, event=None):
         volume = float(self.volume_slider.get()) / 100

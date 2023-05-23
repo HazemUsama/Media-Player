@@ -3,6 +3,7 @@ from signal import signal
 from tkinter import *
 from turtle import bgcolor
 import pygame
+import os.path
 from tkinter import filedialog
 import time
 from mutagen.mp3 import MP3
@@ -16,7 +17,7 @@ import numpy as np
 # Create a GUI window
 root = Tk()
 root.title("Music.hub")
-root.geometry("600x600")
+root.geometry("600x800")
 board = Pedalboard();
 
 pygame.mixer.init()
@@ -24,10 +25,30 @@ pygame.mixer.init()
 global pause
 pause = False
 
-song_box = Listbox(root, bg="#121212", fg="#FFFFFF", selectbackground="#4CAF50", selectforeground="#FFFFFF", bd=0,
-                   font=("Arial", 10))
-song_box.pack(pady=(20, 10), padx=(int(root.winfo_width() * 0.2), int(root.winfo_width() * 0.2)), fill=BOTH, expand=True)
+song_box = Listbox(root, bg="white", fg="black", selectbackground="gray", selectforeground="white", font=("Helvetica", 10), relief=FLAT)
+song_box.pack(pady=20, padx=20, fill=BOTH, expand=True)
 
+style = ttk.Style()
+style.theme_use("clam")
+style.configure("TButton",
+                background="#f47676",
+                foreground="white",
+                font=("Helvetica", 10),
+                relief=FLAT,
+                width=10,
+                padding=5)
+style.map("TButton",
+          background=[('active', '#f47676')])
+
+style.configure("TScale",
+                background="#f47676",
+                troughcolor="#424242",
+                sliderlength=20,
+                sliderthickness=10,
+                troughrelief=FLAT,
+                gripcount=0)
+style.map("TScale",
+          background=[('active', '#f47676')])
 
 def play_time():
     current_time = pygame.mixer.music.get_pos() / 1000
@@ -186,6 +207,8 @@ play_button = Button(control_frame, image=play_ico, borderwidth=0, command=Play)
 pause_button = Button(control_frame, image=pause_ico, borderwidth=0, command=Pause)
 up_button = Button(control_frame, image=up_ico, borderwidth=0, command=add_many_song)
 
+
+
 next_button.grid(row=0, column=5, padx=10)
 back_button.grid(row=0, column=1, padx=10)
 play_button.grid(row=0, column=4, padx=10)
@@ -223,3 +246,4 @@ pedalboard = Pedalboard()  # Create the Pedalboard object
 
 # Execute Tkinter
 root.mainloop()
+       
