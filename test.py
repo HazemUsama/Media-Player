@@ -1,4 +1,5 @@
 # import libraries
+from signal import signal
 from tkinter import *
 from turtle import bgcolor
 import pygame
@@ -8,6 +9,10 @@ from mutagen.mp3 import MP3
 import tkinter.ttk as ttk
 from pedalboard import Pedalboard, Chorus, Reverb, Compressor, Delay, Distortion, Gain
 from pedalboard.io import AudioFile
+import librosa
+import soundfile as sf
+import wave
+import numpy as np
 # Create a GUI window
 root = Tk()
 root.title("Music.hub")
@@ -57,7 +62,6 @@ def Play():
     volume = volume_scale.get() / 100
     pygame.mixer.music.set_volume(volume)
     play_time()
-
 
 def add_many_song():
     songs = filedialog.askopenfilenames(initialdir="Music/", title="Choose a song", filetypes=(("mp3 Files", ".mp3"),))
@@ -129,18 +133,42 @@ def reverb():
 def compress():
             # Add a compressor pedal
             board.append(Compressor(threshold_db=-20, ratio=5, attack_ms=10, release_ms=50))
-            
-def delay():
-            # Add a delay pedal
-            board.append(Delay(delay_seconds=0.2))
-        
-def distortion():
-            # Add a distortion pedal
-            board.append(Distortion(distortion=0.2))
-            
-            
-def gain():
-            board.append(Gain(gain_db=10))
+            signal,sm= librosa.load(song_box.get(ACTIVE))
+            tmp1 = librosa.effects.time_stretch(signal,rate=3)
+            sf.write("args1.wav", tmp1, sm)
+            pygame.mixer.music.load("args1.wav")
+            pygame.mixer.music.play()
+            wav0=wave.open("args1.wav", "r")
+            raw=wav0.readframes(-1)
+            raw=np.frombuffer(raw,"int16")
+            sampleRate=wav0.getframerate()
+
+def expansion():
+            # Add a compressor pedal
+            board.append(Compressor(threshold_db=-20, ratio=5, attack_ms=10, release_ms=50))
+            signal,sm= librosa.load(song_box.get(ACTIVE))
+            tmp1 = librosa.effects.time_stretch(signal,rate=0.5)
+            sf.write("args2.wav", tmp1, sm)
+            pygame.mixer.music.load("args2.wav")
+            pygame.mixer.music.play()
+            wav0=wave.open("args2.wav", "r")
+            raw=wav0.readframes(-1)
+            raw=np.frombuffer(raw,"int16")
+            sampleRate=wav0.getframerate()
+
+def increase_amp():
+       signal,sm= librosa.load(song_box.get(ACTIVE))
+       tmp1 = librosa.effects.pitch_shift(signal,sr=sm, n_steps = 7)
+       sf.write("args3.wav", tmp1, sm)
+       pygame.mixer.music.load("args3.wav")
+       pygame.mixer.music.play()
+
+def decrease_amp():
+       signal,sm= librosa.load(song_box.get(ACTIVE))
+       tmp1 = librosa.effects.pitch_shift(signal,sr=sm, n_steps = -7)
+       sf.write("args4.wav", tmp1, sm)
+       pygame.mixer.music.load("args4.wav")
+       pygame.mixer.music.play()
 
 
 next_ico = PhotoImage(file="Icons/next.png")
@@ -175,11 +203,11 @@ remove_song_menu.add_command(label="Remove one song", command=remove_song)
 remove_song_menu.add_command(label="Remove all songs", command=remove_all_songs)
 
 features = Menu(my_menu)
-my_menu.add_cascade(label="Features", menu=features)
+my_menu.add_cascade(label="Effects", menu=features)
 features.add_command(label="Compress", command=compress)
-features.add_command(label="Delay", command=delay)
-features.add_command(label="Gain", command=gain)
-features.add_command(label="Reverb",command= reverb)
+features.add_command(label="expansion",command= expansion)
+features.add_command(label="increase_amp", command=increase_amp)
+features.add_command(label="decrease_amp", command=decrease_amp)
 
 status_bar = Label(root, text='', bd=1, relief=GROOVE, anchor=E)
 status_bar.pack(fill=X, side=BOTTOM, ipady=2)
